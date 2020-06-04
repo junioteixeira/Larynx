@@ -1,4 +1,5 @@
 ﻿using LarynxModule;
+using LarynxModule.SpeechRecognize.Google;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,7 +14,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Larynx
 {
@@ -37,7 +37,6 @@ namespace Larynx
         public MainWindow()
         {
             InitializeComponent();
-            var c = new Recorder();
             //FileStream fs1 = new FileStream("apenas_um_show.flac", FileMode.Open);
             //byte[] flacAudio1 = new byte[fs1.Length];
 
@@ -50,6 +49,10 @@ namespace Larynx
             //string text = larynxGoogleSpeech.SpeechToTextAsync(flacAudio1, 44100).Result;
             //string text2 = larynxGoogleSpeech.SpeechToTextAsync(flacAudio2, 44100).Result;
             //MessageBox.Show(text);
+
+            GoogleSpeech googleSpeech = new GoogleSpeech();
+            FileStream fs1 = new FileStream(Path.Combine("FlacTests", "apenas_um_show.flac"), FileMode.Open);
+            googleSpeech.Recognize(fs1, 44100, 1, LarynxModule.SpeechRecognize.AudioFormat.FLAC);
         }
     }
 }

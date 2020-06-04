@@ -1,5 +1,4 @@
-﻿using FlacBox;
-using LarynxModule.SpeechRecognize;
+﻿using LarynxModule.SpeechRecognize;
 using LarynxModule.SpeechRecognize.Google;
 using Newtonsoft.Json;
 using System;
@@ -13,12 +12,12 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LarynxModule
+namespace LarynxModule.SpeechRecognize.Google
 {
 
     public class GoogleSpeech : ISpeech<GoogleTextResponse>
     {
-        private const string GOOGLE_SPEECH_URL = "https://www.google.com/speech-api/v2/recognize?client=chromium&lang=pt-BR&key=";
+        private const string GOOGLE_SPEECH_URL = "https://www.google.com/speech-api/v2/recognize?client=chromium";
         private const string DEFAULT_KEY = "AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw";
 
         private HttpClient httpClient = new HttpClient();
@@ -29,7 +28,7 @@ namespace LarynxModule
         public string ApiKey { get; private set; }
 
         public CultureInfo CultureLanguage { get; set; }
-        public string EndPointAddress => GOOGLE_SPEECH_URL + ApiKey;
+        public string EndPointAddress => GOOGLE_SPEECH_URL + $"&lang={CultureLanguage.Name}&key=" + ApiKey;
 
 
         public GoogleSpeech() : this(DEFAULT_KEY, CultureInfo.CurrentCulture)
