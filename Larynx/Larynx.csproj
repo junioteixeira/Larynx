@@ -128,7 +128,7 @@
     <Content Include="FlacTests\apenas_um_show.flac">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="FlacTests\good-morning-google.flac">
+    <Content Include="FlacTests\apenas_um_show2.flac">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -58,6 +58,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Recorder.cs" />
     <Compile Include="SpeechRecognize\AudioFormat.cs" />
     <Compile Include="SpeechRecognize\AudioFormatException.cs" />
     <Compile Include="SpeechRecognize\Google\GoogleSpeech.cs" />

@@ -1,6 +1,7 @@
 ﻿using LarynxModule.SpeechRecognize;
 using LarynxModule.SpeechRecognize.Google;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -32,13 +33,13 @@ namespace LarynxModule.SpeechRecognize.Google
 
 
         public GoogleSpeech() : this(DEFAULT_KEY, CultureInfo.CurrentCulture)
-        { 
+        {
         }
         public GoogleSpeech(CultureInfo cultureLanguage) : this(DEFAULT_KEY, CultureInfo.CurrentCulture)
-        { 
+        {
         }
         public GoogleSpeech(string apiKey) : this(apiKey, CultureInfo.CurrentCulture)
-        { 
+        {
         }
         public GoogleSpeech(string apikey, CultureInfo cultureLanguage)
         {
@@ -76,9 +77,28 @@ namespace LarynxModule.SpeechRecognize.Google
                                                            .ConfigureAwait(false);
             List<GoogleTextResponse> listText = new List<GoogleTextResponse>();
             string response_str = await response.Content.ReadAsStringAsync();
-            // JSON CODE HERE
+            string[] list_resut = response_str.Split('\n');
+            foreach (var json_result in list_resut)
+            {
+                if (json_result == string.Empty)
+                    continue;
 
-            return listText;
+                JObject o = JObject.Parse(json_result);
+                if (o["result"].Count() == 0)
+                    continue;
+
+                var result = o["result"][0];
+                foreach (var alternative in result["alternative"])
+                {
+                    var textResponse = new GoogleTextResponse();
+                    textResponse.Text = (string)alternative["transcript"];
+                    textResponse.Confidence = (double?)alternative["confidence"] ?? double.NaN;
+                    listText.Add(textResponse);
+                }
+            }
+
+            return listText.OrderByDescending(r => r.Confidence)
+                           .ToList();
         }
     }
 }

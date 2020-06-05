@@ -1,6 +1,8 @@
 ﻿using LarynxModule;
+using LarynxModule.SpeechRecognize;
 using LarynxModule.SpeechRecognize.Google;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -37,22 +39,19 @@ namespace Larynx
         public MainWindow()
         {
             InitializeComponent();
-            //FileStream fs1 = new FileStream("apenas_um_show.flac", FileMode.Open);
-            //byte[] flacAudio1 = new byte[fs1.Length];
-
-            //FileStream fs2 = new FileStream("text.flac", FileMode.Open);
-            //byte[] flacAudio2 = new byte[fs2.Length];
-
-            //fs1.Read(flacAudio1, 0, flacAudio1.Length);
-            //fs2.Read(flacAudio2, 0, flacAudio2.Length);
-            //LarynxGoogleSpeech larynxGoogleSpeech = new LarynxGoogleSpeech();
-            //string text = larynxGoogleSpeech.SpeechToTextAsync(flacAudio1, 44100).Result;
-            //string text2 = larynxGoogleSpeech.SpeechToTextAsync(flacAudio2, 44100).Result;
-            //MessageBox.Show(text);
 
             GoogleSpeech googleSpeech = new GoogleSpeech();
+            //Recorder recorder = new Recorder();
             FileStream fs1 = new FileStream(Path.Combine("FlacTests", "apenas_um_show.flac"), FileMode.Open);
-            googleSpeech.Recognize(fs1, 44100, 1, LarynxModule.SpeechRecognize.AudioFormat.FLAC);
+            var googleTextResponses = googleSpeech.Recognize(fs1,
+                                                            44100,
+                                                            1,
+                                                            AudioFormat.FLAC);
+            FileStream fs2 = new FileStream(Path.Combine("FlacTests", "apenas_um_show2.flac"), FileMode.Open);
+            googleTextResponses = googleSpeech.Recognize(fs2,
+                                                            44100,
+                                                            1,
+                                                            AudioFormat.FLAC);
         }
     }
 }
