@@ -1,0 +1,3 @@
+[submodule "HttpTwo"]
+	path = HttpTwo
+	url = https://github.com/Redth/HttpTwo.git
