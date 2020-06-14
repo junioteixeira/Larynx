@@ -40,18 +40,16 @@ namespace Larynx
         {
             InitializeComponent();
 
-            GoogleSpeech googleSpeech = new GoogleSpeech();
             //Recorder recorder = new Recorder();
-            FileStream fs1 = new FileStream(Path.Combine("FlacTests", "apenas_um_show.flac"), FileMode.Open);
+            GoogleSpeech googleSpeech = new GoogleSpeech();
+
+            FileStream fs1 = new FileStream(Path.Combine("FlacTests", "apenas_um_show_ep1_cut.flac"), FileMode.Open);
             var googleTextResponses = googleSpeech.Recognize(fs1,
                                                             44100,
                                                             1,
                                                             AudioFormat.FLAC);
-            FileStream fs2 = new FileStream(Path.Combine("FlacTests", "apenas_um_show2.flac"), FileMode.Open);
-            googleTextResponses = googleSpeech.Recognize(fs2,
-                                                            44100,
-                                                            1,
-                                                            AudioFormat.FLAC);
+           
+
         }
     }
 }
