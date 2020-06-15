@@ -2,7 +2,7 @@
 {
     public enum AudioFormat
     {
-        WAV_MULAW,
+        WAV_LINEAR16,
         FLAC,
         MP3
     }

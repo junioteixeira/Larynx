@@ -1,4 +1,5 @@
 ﻿using LarynxModule;
+using LarynxModule.Engine;
 using LarynxModule.SpeechRecognize;
 using LarynxModule.SpeechRecognize.Google;
 using System;
@@ -33,6 +34,7 @@ namespace Larynx
         //	->Passar música
         //	->Voltar
         //	->Pausar
+        //  ->Caps Lock
         // *Configuração avançada de Flac e codificação
         // *Statusbar de ping
 
@@ -40,18 +42,9 @@ namespace Larynx
         {
             InitializeComponent();
 
-            GoogleSpeech googleSpeech = new GoogleSpeech();
-            //Recorder recorder = new Recorder();
-            FileStream fs1 = new FileStream(Path.Combine("FlacTests", "apenas_um_show.flac"), FileMode.Open);
-            var googleTextResponses = googleSpeech.Recognize(fs1,
-                                                            44100,
-                                                            1,
-                                                            AudioFormat.FLAC);
-            FileStream fs2 = new FileStream(Path.Combine("FlacTests", "apenas_um_show2.flac"), FileMode.Open);
-            googleTextResponses = googleSpeech.Recognize(fs2,
-                                                            44100,
-                                                            1,
-                                                            AudioFormat.FLAC);
+            LarynxEngine engine = new LarynxEngine();
+
+            engine.StartEngine();
         }
     }
 }
