@@ -50,6 +50,6 @@ Qualquer erro que ocorra será exibido uma mensagem na tela do programa.
 Como mencionado, o programa encontra-se em uma __fase inicial__ de desenvolvimento e, portanto, são esperados que erros aconteçam. Para isso é encorajado que essas questões sejam publicadas na aba **Issues** junto com os *logs*. Os arquivos de *logs* podem ser encontrados em uma pasta ```logs``` junto ao programa, dentro dela os arquivos são gerados por datas com extensão ```.log```.
 
 ## Créditos
-@Metalus, Odysseus, @maxwbot
+[@Metalus](https://github.com/Metalus), Odysseus, [@maxwbot](https://github.com/maxwbot)
 #### 👍 Agradecimentos
-Mr.Terminal, @chiyoku, codando, @alvarofilho
+Mr.Terminal, [@chiyoku](https://github.com/chiyoku), codando, [@alvarofilho](https://github.com/alvarofilho)
