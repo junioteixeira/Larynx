@@ -1,7 +1,9 @@
-﻿using LarynxModule;
+﻿using Larynx.Views;
+using LarynxModule;
 using LarynxModule.Engine;
 using LarynxModule.SpeechRecognize;
 using LarynxModule.SpeechRecognize.Google;
+using MaterialDesignThemes.Wpf;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
@@ -41,10 +43,19 @@ namespace Larynx
         public MainWindow()
         {
             InitializeComponent();
+            LogHelper.ErrorEngine += LogHelper_ErrorEngine;
+        }
 
-            LarynxEngine engine = new LarynxEngine();
-
-            engine.StartEngine();
+        private void LogHelper_ErrorEngine(object sender, EventArgs e)
+        {
+            Dispatcher.Invoke(async () =>
+            {
+                var dialogError = new DialogMessage
+                {
+                    Message = { Text = "Falha crítica!\nRecomendado que reinicie o aplicativo\ne consulte os logs." }
+                };
+                await DialogHost.Show(dialogError);
+            });
         }
     }
 }

@@ -11,9 +11,7 @@ namespace LarynxModule.Engine
     {
         public static Dictionary<string, string> PtPunctuation { get; } = new Dictionary<string, string>
         {
-            { " ponto", "."},
             { "ponto", "."},
-            { " vírgula", ","},
             { "vírgula", ","},
             { "interrogação", "?"},
             { "dois pontos", ":"},
@@ -29,7 +27,7 @@ namespace LarynxModule.Engine
         {
             string ret = Transcript;
             foreach (var k in PtPunctuation.Keys)
-                ret = Regex.Replace(ret, k, PtPunctuation[k], RegexOptions.IgnoreCase);
+                ret = Regex.Replace(ret, $"\\s*{k}", PtPunctuation[k], RegexOptions.IgnoreCase);
 
             return ret;
         }

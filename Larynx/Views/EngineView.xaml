@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="Larynx.Views.EngineView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:local="clr-namespace:Larynx.Views"
+             mc:Ignorable="d" Height="230" Width="208">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Card.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <WrapPanel Margin="4 0 8 30">
+        <GroupBox
+          Header="Opções"
+          Style="{DynamicResource MaterialDesignCardGroupBox}"
+          Margin="0 4 0 0">
+            <GroupBox.HeaderTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon
+                          Kind="Speak"
+                          Height="24"
+                          Width="24"
+                          VerticalAlignment="Center" />
+                        <TextBlock
+                          Margin="8,0,0,0"
+                          VerticalAlignment="Center"
+                          Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                          Text="{Binding}" />
+                    </StackPanel>
+                </DataTemplate>
+            </GroupBox.HeaderTemplate>
+            <Grid Height="206" Width="200" Margin="8 8 8 0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBox
+                  materialDesign:HintAssist.Hint="Atalho para ligar/desligar"
+                  materialDesign:HintAssist.IsFloating="True"
+                    IsReadOnly="True"
+                    x:Name="KeyOnOff"
+                    KeyUp="KeyOnOff_KeyUp"
+                  Margin="0 12 0 0">
+                    F12
+                </TextBox>
+                <Border Grid.Row="1" BorderThickness="0 1 0 0" BorderBrush="{DynamicResource MaterialDesignDivider}" Padding="16">
+                    <Button Style="{DynamicResource MaterialDesignRaisedButton}" 
+                                            x:Name="EngineButton"
+                                            Margin="16 10 0 0"
+                            HorizontalAlignment="Left">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Play" x:Name="EngineIconStatus" />
+                            <TextBlock Margin="2 0 0 0" VerticalAlignment="Center">Iniciar</TextBlock>
+                        </StackPanel>
+                    </Button>
+                </Border>
+            </Grid>
+        </GroupBox>
+    </WrapPanel>
+</UserControl>

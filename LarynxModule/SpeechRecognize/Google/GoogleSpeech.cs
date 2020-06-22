@@ -1,4 +1,6 @@
-﻿using Google.Api.Gax.Grpc;
+﻿using CUETools.Codecs;
+using CUETools.Codecs.FLAKE;
+using Google.Api.Gax.Grpc;
 using Google.Cloud.Speech.V1;
 using Google.Protobuf;
 using Grpc.Core;
@@ -83,7 +85,7 @@ namespace LarynxModule.SpeechRecognize.Google
 
             var speechBuilder = new SpeechClientBuilder();
             speechBuilder.ChannelCredentials = sslCredentials;
-
+            //speechBuilder.Endpoint = "google.com/speech-api/";
             var speech = speechBuilder.Build();
             var streamingCall = speech.StreamingRecognize(CallSettings.FromHeader("x-goog-api-key", ApiKey));
 
@@ -99,6 +101,8 @@ namespace LarynxModule.SpeechRecognize.Google
                             SampleRateHertz = SampleRate,
                             LanguageCode = CultureLanguage.ToString(),
                             EnableAutomaticPunctuation = false,
+                            AudioChannelCount = 1,
+                            UseEnhanced = true
                         },
                         InterimResults = false,
                     }
@@ -132,7 +136,8 @@ namespace LarynxModule.SpeechRecognize.Google
 
             InitializedStreaming = true;
             writeMore = true;
-            await Task.Delay(TimeSpan.FromSeconds(timeseconds), ct);
+            try { await Task.Delay(TimeSpan.FromSeconds(timeseconds), ct); }
+            catch { /* expected exception when cancels */ }
             while (DateTime.Now - lastWrite > TimeSpan.FromSeconds(2) &&
                    DateTime.Now - lastWrite < TimeSpan.FromSeconds(10) &&
                    !ct.IsCancellationRequested)
@@ -143,6 +148,9 @@ namespace LarynxModule.SpeechRecognize.Google
             // Stop write data to speech server and buffer in memory.
             lock (writeLock)
                 writeMore = false;
+
+            if (ct.IsCancellationRequested)
+                InitializedStreaming = false;
 
             await streamingGoogle.WriteCompleteAsync();
             await receiveResponses.ConfigureAwait(false);
@@ -155,14 +163,26 @@ namespace LarynxModule.SpeechRecognize.Google
                 throw new InvalidCastException("Format not supported for Streaming recognize");
 
             waveIn.DataAvailable += WaveIn_DataAvailable;
-            
+
+
             Task recognizeTask = Task.Factory.StartNew(async () =>
             {
-                for (; !ct.IsCancellationRequested; )
-                    await StreamingMicRecognizeAsync(waveIn.WaveFormat.SampleRate, 
-                                                     SAFE_STREAM_TIMEOUT, 
-                                                     ct);
-            }, ct ,TaskCreationOptions.LongRunning, TaskScheduler.Default);
+                try
+                {
+                    for (; !ct.IsCancellationRequested;)
+                        await StreamingMicRecognizeAsync(waveIn.WaveFormat.SampleRate,
+                                                         SAFE_STREAM_TIMEOUT,
+                                                         ct);
+
+                    waveIn.DataAvailable -= WaveIn_DataAvailable;
+                    waveIn.StopRecording();
+                    audioBuffer.Clear(); // Clear temp buffer
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.WriteLog(this, ex.ToString());
+                }
+            }, ct, TaskCreationOptions.LongRunning, TaskScheduler.Default);
             waveIn.StartRecording();
             return recognizeTask;
         }
@@ -173,34 +193,78 @@ namespace LarynxModule.SpeechRecognize.Google
                 return;
             lock (writeLock)
             {
-                if (!writeMore)
+                try
                 {
-                    for (int i = 0; i < e.BytesRecorded; i++)
-                        audioBuffer.Add(e.Buffer[i]);
-                }
-                else
-                {
-                    if (audioBuffer.Count > 0)
+                    //byte[] flac = Wav2FlacBuffConverter(e.Buffer);
+                    if (!writeMore)
                     {
+                        for (int i = 0; i < e.BytesRecorded; i++)
+                            audioBuffer.Add(e.Buffer[i]);
+                    }
+                    else
+                    {
+                        if (audioBuffer.Count > 0)
+                        {
+                            streamingGoogle.WriteAsync(
+                                new StreamingRecognizeRequest()
+                                {
+                                    AudioContent = ByteString
+                                        .CopyFrom(audioBuffer.ToArray(), 0, audioBuffer.Count)
+                                }).Wait();
+
+                            audioBuffer.Clear();
+                        }
+
                         streamingGoogle.WriteAsync(
                             new StreamingRecognizeRequest()
                             {
                                 AudioContent = ByteString
-                                    .CopyFrom(audioBuffer.ToArray(), 0, audioBuffer.Count)
+                                    .CopyFrom(e.Buffer, 0, e.BytesRecorded)
                             }).Wait();
-
-                        audioBuffer.Clear();
                     }
-
-                    streamingGoogle.WriteAsync(
-                        new StreamingRecognizeRequest()
-                        {
-                            AudioContent = ByteString
-                                .CopyFrom(e.Buffer, 0, e.BytesRecorded)
-                        }).Wait();
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.WriteLog(this, ex.ToString());
                 }
             }
         }
+
+        Stream OutFlacStream = new MemoryStream();
+        FlakeWriter flakeWriter = null;
+
+
+        private byte[] Wav2FlacBuffConverter(byte[] Buffer)
+        {
+            AudioPCMConfig pcmconf = new AudioPCMConfig(16, 1, 16000);
+            if (flakeWriter == null)
+            {
+                OutFlacStream = new MemoryStream();
+                flakeWriter = new FlakeWriter(null, OutFlacStream, pcmconf);
+                flakeWriter.Padding = 0;
+            }
+
+            Stream OutWavStream = new MemoryStream();
+
+            WAVWriter wr = new WAVWriter(null, OutWavStream, pcmconf);
+            wr.Write(new AudioBuffer(pcmconf, Buffer, Buffer.Length / 2));
+            OutWavStream.Seek(0, SeekOrigin.Begin);
+
+            WAVReader audioSource = new WAVReader(null, OutWavStream);
+            if (audioSource.PCM.SampleRate != 16000)
+                return null;
+            AudioBuffer buff = new AudioBuffer(audioSource, Buffer.Length);
+            flakeWriter.CompressionLevel = 8;
+            while (audioSource.Read(buff, -1) != 0)
+            {
+                flakeWriter.Write(buff);
+            }
+            OutFlacStream.Seek(0, SeekOrigin.Begin);
+            byte[] barr = new byte[OutFlacStream.Length];
+            OutFlacStream.Read(barr, 0, (int)OutFlacStream.Length);
+            return barr;
+        }
+
 
         public virtual void OnTextRecognized(string Text)
         {

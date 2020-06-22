@@ -7,15 +7,26 @@
         xmlns:localviews="clr-namespace:Larynx.Views"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" x:Class="Larynx.MainWindow"
         mc:Ignorable="d"
-        Title="Larynx" Height="450" Width="620" ResizeMode="NoResize"
+        Title="Larynx" Height="450" Width="620" ResizeMode="CanMinimize"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         Background="{DynamicResource MaterialDesignPaper}"
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
+        WindowStartupLocation="CenterScreen"
         FontFamily="{materialDesign:MaterialDesignFont}">
-    <WrapPanel Margin="0 0 8 8 " Orientation="Vertical">
-        <localviews:Microphone/>
+    <materialDesign:DialogHost Identifier="RootDialog">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <localviews:HomeView/>
+            <localviews:MainBottom Grid.Row="1"/>
+        </Grid>
+    </materialDesign:DialogHost>
+    <!--<localviews:Microphone/>
         <localviews:VoiceShortcuts/>
-    </WrapPanel>
+        <localviews:MainHeader/>-->
+
 </Window>

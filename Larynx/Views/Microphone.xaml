@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:local="clr-namespace:Larynx.Views"
-             mc:Ignorable="d" Height="208" Width="208">
+             mc:Ignorable="d" Height="230" Width="250">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -18,26 +18,37 @@
     <WrapPanel Margin="0 0 8 8">
         <materialDesign:Flipper Style="{StaticResource MaterialDesignCardFlipper}">
             <materialDesign:Flipper.FrontContent>
-                <Grid Height="206" Width="200">
+                <Grid Height="206" Width="250">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="128" />
                         <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <materialDesign:ColorZone Mode="PrimaryMid" VerticalAlignment="Stretch">
                         <materialDesign:PackIcon Kind="Microphone" Height="128" Width="128"
                                                  VerticalAlignment="Center" HorizontalAlignment="Center" />
                     </materialDesign:ColorZone>
                     <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0 10 0 0">
-                        <TextBlock Text="My Microphone 1" HorizontalAlignment="Center"/>
-                        <Button Style="{StaticResource MaterialDesignRaisedButton}"
-                                Command="{x:Static materialDesign:Flipper.FlipCommand}"
-                                Margin="0 10 0 0"
-                                Content="Configurações"/>
+                        <TextBlock Text="{Binding SelectedMicrophone}" HorizontalAlignment="Center" TextWrapping="Wrap"/>
+                        <StackPanel Orientation="Horizontal" Margin="0 10 0 5" HorizontalAlignment="Center">
+                            <Button Style="{StaticResource MaterialDesignRaisedButton}"
+                                    Command="{x:Static materialDesign:Flipper.FlipCommand}"
+                                    Content="Configurar"/>
+                            <Button Style="{DynamicResource MaterialDesignRaisedButton}" 
+                                        x:Name="EngineButton"
+                                        Margin="4 0 0 0"
+                                        HorizontalAlignment="Left"
+                                        Click="EngineButton_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon x:Name="EngineButtonIcon" Kind="Play" />
+                                    <TextBlock Margin="2 0 0 0" VerticalAlignment="Center" Text="{Binding StatusEngine}"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
                     </StackPanel>
                 </Grid>
             </materialDesign:Flipper.FrontContent>
             <materialDesign:Flipper.BackContent>
-                <Grid Height="206" Width="200">
+                <Grid Height="206" Width="250">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
@@ -53,30 +64,34 @@
                         </StackPanel>
                     </materialDesign:ColorZone>
                     <Grid Grid.Row="1" Margin="0 6 0 0" HorizontalAlignment="Center" VerticalAlignment="Top"
-                          Width="172">
+                          Width="220">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <ComboBox materialDesign:HintAssist.Hint="Microfones">
-                            <ComboBoxItem>
-                                Microfone 1
-                            </ComboBoxItem>
-                            <ComboBoxItem>
-                                Microfone 2
-                            </ComboBoxItem>
+                        <ComboBox materialDesign:HintAssist.Hint="Microfones"
+                                  ItemsSource="{Binding MicrophoneList}"
+                                  SelectedItem="{Binding SelectedMicrophone, UpdateSourceTrigger=PropertyChanged}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock 
+                                        Text="{Binding}" 
+                                        TextTrimming="WordEllipsis" 
+                                        TextWrapping="Wrap"/> 
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
                         </ComboBox>
-                        <StackPanel Orientation="Horizontal"  Margin="0 0 0 0" Grid.Row="1">
+                        <StackPanel Orientation="Horizontal"  Margin="0 0 0 0" Grid.Row="1" IsEnabled="False">
                             <TextBlock VerticalAlignment="Bottom" Text="Volume" />
                             <Slider
                                 Minimum="0"
                                 Maximum="100"
                                 Style="{StaticResource MaterialDesignDiscreteSlider}"
                                 ToolTip="MaterialDesignDiscreteSlider"
-                                Width="120" />
+                                Width="160" />
                         </StackPanel>
-                        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0 40 0 0" HorizontalAlignment="Right">
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0 20 0 0" HorizontalAlignment="Right" IsEnabled="False">
                             <TextBlock VerticalAlignment="Center">AGC</TextBlock>
                             <ToggleButton Margin="8 0 0 0"></ToggleButton>
                         </StackPanel>

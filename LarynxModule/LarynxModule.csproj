@@ -125,6 +125,7 @@
     <Compile Include="Engine\EngineWords.cs" />
     <Compile Include="Engine\LarynxEngineState.cs" />
     <Compile Include="Engine\LarynxEngine.cs" />
+    <Compile Include="LogHelper.cs" />
     <Compile Include="SpeechRecognize\AudioFormat.cs" />
     <Compile Include="SpeechRecognize\AudioFormatException.cs" />
     <Compile Include="SpeechRecognize\Google\GoogleSpeech.cs" />
