@@ -30,6 +30,19 @@ Caso queira utilizar outro microfone, basta clicar em ```Configurar``` e selecio
 
 ![ConfigView_screen.png](Larynx/Resources/ConfigView_screen.png)
 
+### Palavras-chaves para pontuação
+O **Larynx** suporta o uso de palavras-chaves para substituir por pontuações da língua portuguesa. Exemplo, caso o usuário diga ```vírgula``` no texto será substituído por ```,```. Isso vale para as palavras abaixo:
+- ```vírgula``` por ```,```
+- ```ponto``` por ```.```
+- ```interrogação``` por ```?```
+- ```dois pontos``` por ```:```
+- ```ponto e vírgula``` por ```;```
+- ```exclamação``` por ```!```
+- ```hífen``` por ```-```
+- ```nova linha``` por ```\n``` (uma quebra de linha)
+- ```abre parêtenses``` por ```(```
+- ```fecha parêtenses``` por ```)```
+
 Qualquer erro que ocorra será exibido uma mensagem na tela do programa.
 
 ## 💡 Funcionalidades futuras
