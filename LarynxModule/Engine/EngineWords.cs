@@ -11,16 +11,17 @@ namespace LarynxModule.Engine
     {
         public static Dictionary<string, string> PtPunctuation { get; } = new Dictionary<string, string>
         {
-            { "ponto", "."},
-            { "vírgula", ","},
             { "interrogação", "?"},
             { "dois pontos", ":"},
             { "ponto e vírgula", ";"},
             { "exclamação", "!"},
             { "hífen", "-"},
-            { "nova linha", "\n"},
             { "abre parêntese", "("},
             { "fecha parêntese", ")"},
+            { "arroba", "@" },
+            { "ponto", "."},
+            { "vírgula", ","},
+            //{ "nova linha", "\n"},
         };
 
         public static string ReplacePunctuation(string Transcript)
