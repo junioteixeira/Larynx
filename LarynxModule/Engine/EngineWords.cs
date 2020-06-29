@@ -21,7 +21,7 @@ namespace LarynxModule.Engine
             { "arroba", "@" },
             { "ponto", "."},
             { "vírgula", ","},
-            //{ "nova linha", "\n"},
+            { "nova linha", "\n"},
         };
 
         public static string ReplacePunctuation(string Transcript)
